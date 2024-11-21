@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtonScript : MonoBehaviour
+public class ButtonScriptLevel2 : MonoBehaviour
 {
     [SerializeField]
     private Transform puzzleField;
@@ -12,7 +12,7 @@ public class ButtonScript : MonoBehaviour
 
     void Awake()
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 16; i++)
         {
             GameObject button = Instantiate(btn);
             button.name = "" + i;
