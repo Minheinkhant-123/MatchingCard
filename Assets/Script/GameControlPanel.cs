@@ -11,6 +11,8 @@ public class GameControlPanel : MonoBehaviour
 
     public Sprite[] crystals;
 
+    public Text guessCount,matchCount;
+
     public AudioSource pickAudio;
     public AudioSource matchAudio;
     public AudioSource wrongPickAudio;
@@ -92,6 +94,10 @@ public class GameControlPanel : MonoBehaviour
             SecondGuessCrystal = crystalButton[SecondGuessClick].name;
             buttons[SecondGuessClick].image.sprite = crystalButton[SecondGuessClick];
             countGuess++;
+            if(guessCount !=null)
+            { 
+                guessCount.text = countGuess.ToString();
+            }
             StartCoroutine(CheckCrystalAreMatch());
         }    
     }
@@ -124,7 +130,11 @@ public class GameControlPanel : MonoBehaviour
     void ChecktheMatchFinish()
     {
         correctCountGuess++;
-        if(correctCountGuess ==gameGuess)
+        if (matchCount != null)
+        {
+            matchCount.text = correctCountGuess.ToString();
+        }
+        if (correctCountGuess ==gameGuess)
         {
             nextLevelAudio.Play();
             Invoke("ChangeSense", 2);
