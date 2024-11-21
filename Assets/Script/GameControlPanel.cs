@@ -11,6 +11,10 @@ public class GameControlPanel : MonoBehaviour
 
     public Sprite[] crystals;
 
+    public AudioSource pickAudio;
+    public AudioSource matchAudio;
+    public AudioSource wrongPickAudio;
+    public AudioSource nextLevelAudio;
 
     public List<Sprite> crystalButton = new List<Sprite>();
     public List<Button> buttons = new List<Button>();
@@ -74,6 +78,7 @@ public class GameControlPanel : MonoBehaviour
     {
         if (!FirstClick)
         {
+            pickAudio.Play();
             FirstClick = true;
             FirstGuessClick = int.Parse(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name);
             FirstGuessCrystal = crystalButton[FirstGuessClick].name;
@@ -81,6 +86,7 @@ public class GameControlPanel : MonoBehaviour
         }
         else if (!SecondClick)
         {
+            pickAudio.Play();
             SecondClick = true;
             SecondGuessClick = int.Parse(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name);
             SecondGuessCrystal = crystalButton[SecondGuessClick].name;
@@ -94,6 +100,7 @@ public class GameControlPanel : MonoBehaviour
         yield return new WaitForSeconds(1f);
         if(FirstGuessCrystal == SecondGuessCrystal)
         {
+            matchAudio.Play();
             buttons[FirstGuessClick].interactable = false;
             buttons[SecondGuessClick].interactable = false;
 
@@ -104,6 +111,7 @@ public class GameControlPanel : MonoBehaviour
         }
         else
         {
+            wrongPickAudio.Play();
             buttons[FirstGuessClick].image.sprite = bgImage;
             buttons[SecondGuessClick].image.sprite = bgImage;
 
@@ -118,16 +126,20 @@ public class GameControlPanel : MonoBehaviour
         correctCountGuess++;
         if(correctCountGuess ==gameGuess)
         {
-
-                int sceneBuild = 1;
-            if (SceneManager.GetActiveScene().buildIndex< 4)
-            { 
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + (sceneBuild));
-            }
-            else
-            {
-
-            }
+            nextLevelAudio.Play();
+            Invoke("ChangeSense", 2);
+      
+        }
+    }
+    void ChangeSense()
+    {
+        int sceneBuild = 1;
+        if (SceneManager.GetActiveScene().buildIndex < 4)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + (sceneBuild));
+        }
+        else
+        {
 
         }
     }
