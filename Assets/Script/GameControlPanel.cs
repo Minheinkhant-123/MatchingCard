@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,6 +18,7 @@ public class GameControlPanel : MonoBehaviour
     public AudioSource matchAudio;
     public AudioSource wrongPickAudio;
     public AudioSource nextLevelAudio;
+    public AudioSource gameEffectAudio;
 
     public List<Sprite> crystalButton = new List<Sprite>();
     public List<Button> buttons = new List<Button>();
@@ -28,10 +30,12 @@ public class GameControlPanel : MonoBehaviour
     public bool FirstClick, SecondClick;
     public int FirstGuessClick, SecondGuessClick;
     public string FirstGuessCrystal, SecondGuessCrystal;
+    private string saveFilePath;
 
     void Awake()
     {
         crystals = Resources.LoadAll<Sprite> ("Images/Crystal");
+        saveFilePath = Path.Combine(Application.persistentDataPath, "sceneSave.json");
     }
     void Start()
     {
@@ -122,7 +126,7 @@ public class GameControlPanel : MonoBehaviour
             buttons[SecondGuessClick].image.sprite = bgImage;
 
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0f);
         FirstClick = false;
         SecondClick = false;
 
@@ -150,7 +154,7 @@ public class GameControlPanel : MonoBehaviour
         }
         else
         {
-
+            SceneManager.LoadScene(0);
         }
     }
 
@@ -163,5 +167,43 @@ public class GameControlPanel : MonoBehaviour
             sprites[i] = sprites[RandomIndex];
             sprites[RandomIndex] = cry;
         }
+    }
+    public void SaveScene()
+    {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        File.WriteAllText(saveFilePath, currentSceneName);
+        Debug.Log($"Scene '{currentSceneName}' saved!");
+    }
+
+    public string LoadScene()
+    {
+        if (File.Exists(saveFilePath))
+        {
+            
+            string savedSceneName = File.ReadAllText(saveFilePath);
+            Debug.Log($"Scene '{savedSceneName}' loaded!");
+            return savedSceneName;
+        }
+
+        Debug.LogWarning("No saved scene found!");
+        return null;
+    }
+
+    public void LoadSavedScene()
+    {
+        string sceneName = LoadScene();
+        if (!string.IsNullOrEmpty(sceneName))
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+        else
+        {
+            Debug.LogError("Failed to load scene. No scene name found.");
+        }
+    }
+
+    public void ExitScene()
+    {
+        SceneManager.LoadScene(0);
     }
 }
